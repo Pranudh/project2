@@ -28,17 +28,24 @@ class MovieTicketBookingSystem:
         choice = input("Enter choice: ")
 
         if choice == '1':
-            phone_number = input("Enter phone number: ")
-            if phone_number in self.customers:
-                self.logged_in_user = User(phone_number, "", "customer")
-                print(f"Login successful! Logged in as customer.")
-                return True
-            else:
-                name = input("Enter your name to register: ")
-                self.customers[phone_number] = name
-                self.logged_in_user = User(phone_number, "", "customer")
-                print(f"Registration successful! Logged in as customer.")
-                return True
+            while True:
+                phone_number = input("Enter phone number: ")
+
+                # Validate that the input contains only digits
+                if phone_number.isdigit():
+                    if phone_number in self.customers:
+                        self.logged_in_user = User(phone_number, "", "customer")
+                        print(f"Login successful! Logged in as customer.")
+                        return True
+                    else:
+                        name = input("Enter your name to register: ")
+                        self.customers[phone_number] = name
+                        self.logged_in_user = User(phone_number, "", "customer")
+                        print(f"Registration successful! Logged in as customer.")
+                        return True
+                else:
+                    print("Invalid phone number. Please enter digits only.")
+        
         elif choice == '2':
             username = input("Enter username: ")
             password = input("Enter password: ")
@@ -57,7 +64,7 @@ class MovieTicketBookingSystem:
         while True:
             print("\nCustomer Menu:")
             print("1. View Movies")
-            print("2. Book Ticket")
+            print("2. Book Tickets")
             print("3. Logout")
             choice = input("Enter choice: ")
 
@@ -102,14 +109,15 @@ class MovieTicketBookingSystem:
         if not self.movies:
             return
         try:
-            choice = int(input("Enter the movie number to book a ticket: "))
+            choice = int(input("Enter the movie number to book tickets: "))
             if 1 <= choice <= len(self.movies):
                 selected_movie = self.movies[choice - 1]
-                if selected_movie.available_tickets > 0:
-                    selected_movie.available_tickets -= 1
-                    print(f"Ticket booked successfully for {selected_movie.title}.")
+                num_tickets = int(input(f"Enter the number of tickets to book for {selected_movie.title}: "))
+                if num_tickets <= selected_movie.available_tickets:
+                    selected_movie.available_tickets -= num_tickets
+                    print(f"{num_tickets} ticket(s) booked successfully for {selected_movie.title}.")
                 else:
-                    print("No tickets available for this movie.")
+                    print("Not enough tickets available.")
             else:
                 print("Invalid movie number.")
         except ValueError:
